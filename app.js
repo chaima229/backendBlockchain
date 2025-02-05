@@ -1,7 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const transactionRoutes = require('./routes/transactionRoutes');
 const axios = require('axios');
 
 const app = express();
@@ -16,10 +17,14 @@ mongoose.connection.on('error', (err) => {
     console.log('Error connecting to MongoDB:', err);
 });
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // Remplacez par l'URL de votre frontend
+  credentials: true,
+  allowedHeaders: ['Authorization', 'Content-Type']
+}));
 app.use(express.json());
-app.use('/auth', authRoutes);
-
+app.use('/auth', userRoutes);
+app.use('/api', transactionRoutes);
 
 // Remplacez par ta propre clé API
 const API_KEY = '1e616a4c-cbee-421b-8026-57a05041e9ab';
@@ -38,7 +43,6 @@ const options = {
   }
 };
 
-
 // Créer la route pour obtenir les données
 app.get('/api/cryptocurrency', async (req, res) => {
     try {
@@ -48,16 +52,7 @@ app.get('/api/cryptocurrency', async (req, res) => {
       console.error('Error fetching data:', error);
       res.status(500).json({ error: 'Failed to fetch data' });
     }
-  });
-
-  
-axios.get(url, options)
-  .then(response => {
-    console.log(response.data);
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+});
 
 app.listen(3000, () => {
     console.log('Server is running on port 3000');
