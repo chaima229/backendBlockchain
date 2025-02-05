@@ -10,7 +10,7 @@ exports.createTransaction = async (req, res) => {
             return res.status(401).json({ error: "User not authenticated" });
         }
 
-        const { receiver, amount } = req.body;
+        const { receiver, amount,  cryptoId } = req.body;
         const sender = req.user._id; // Récupère l'ID de l'utilisateur authentifié
         console.log("Transaction envoyée par:", sender);
 

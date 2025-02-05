@@ -25,3 +25,26 @@ exports.loginUser = async (req, res) => {
         res.status(400).json({ error: error.message });
     }
 };
+
+// Déconnexion d'un utilisateur
+exports.logoutUser = async (req, res) => {
+    try {
+        req.user.token = null; // Supprimer le token de l'utilisateur
+        await req.user.save();
+        res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
+
+// Récupérer les informations de l'utilisateur authentifié
+exports.getUser = async (req, res) => {
+    try {
+        if (!req.user) {
+            return res.status(401).json({ error: "User not authenticated" });
+        }
+        res.status(200).json(req.user);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+};
